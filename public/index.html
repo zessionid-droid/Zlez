@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zlez.Id Pro Builder</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script>
+tailwind.config = {
+  darkMode: "class"
+};
+</script>
+
+<style>
+body {
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.glass {
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(15px);
+}
+
+.dark .glass {
+  background: rgba(15,23,42,.78);
+}
+</style>
+</head>
+
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-white min-h-screen">
+
+<header class="sticky top-0 z-40 border-b dark:border-slate-800 glass">
+
+  <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+
+    <div>
+      <div class="font-black text-xl">
+        Zlez.Id Pro
+      </div>
+
+      <div class="text-xs text-slate-500">
+        Web to APK Builder
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+
+      <button
+        onclick="toggleTheme()"
+        class="border dark:border-slate-700 rounded-xl px-3 py-2">
+        Theme
+      </button>
+
+      <button
+        onclick="loginGoogle()"
+        class="border dark:border-slate-700 rounded-xl px-3 py-2">
+        Google Login
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-8">
+
+  <div class="mb-8">
+
+    <h1 class="text-3xl md:text-4xl font-black">
+      APK Builder
+    </h1>
+
+    <p class="text-slate-500 mt-2">
+      Ubah website ZIP menjadi APK Android.
+    </p>
+
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-6">
+
+    <!-- MAIN FORM -->
+
+    <section class="lg:col-span-2">
+
+      <div class="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-3xl p-6">
+
+        <h2 class="text-xl font-bold mb-5">
+          Application
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-4">
+
+          <div>
+            <label class="text-sm font-semibold">
+              App Name
+            </label>
+
+            <input
+              id="appName"
+              value="Zlez App"
+              class="mt-2 w-full rounded-xl border dark:border-slate-700 bg-transparent p-3">
+          </div>
+
+          <div>
+            <label class="text-sm font-semibold">
+              Package Name
+            </label>
+
+            <input
+              id="packageName"
+              value="id.zlez.app"
+              class="mt-2 w-full rounded-xl border dark:border-slate-700 bg-transparent p-3">
+          </div>
+
+          <div>
+            <label class="text-sm font-semibold">
+              Version Name
+            </label>
+
+            <input
+              id="versionName"
+              value="1.0.0"
+              class="mt-2 w-full rounded-xl border dark:border-slate-700 bg-transparent p-3">
+          </div>
+
+          <div>
+            <label class="text-sm font-semibold">
+              Version Code
+            </label>
+
+            <input
+              id="versionCode"
+              type="number"
+              min="1"
+              value="1"
+              class="mt-2 w-full rounded-xl border dark:border-slate-700 bg-transparent p-3">
+          </div>
+
+        </div>
+
+        <hr class="my-7 border-slate-200 dark:border-slate-800">
+
+        <h2 class="text-xl font-bold mb-5">
+          Website
+        </h2>
+
+        <label
+          class="block border-2 border-dashed dark:border-slate-700 rounded-2xl p-8 text-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800">
+
+          <div class="font-bold">
+            Upload Website ZIP
+          </div>
+
+          <div class="text-sm text-slate-500 mt-2">
+            ZIP harus berisi index.html
+          </div>
+
+          <input
+            id="website"
+            type="file"
+            accept=".zip"
+            class="hidden">
+
+        </label>
+
+        <div
+          id="websiteInfo"
+          class="text-sm text-slate-500 mt-3">
+          Belum ada ZIP.
+        </div>
+
+        <div class="mt-5">
+
+          <label class="text-sm font-semibold">
+            Template
+          </label>
+
+          <select
+            id="template"
+            class="mt-2 w-full rounded-xl border dark:border-slate-700 bg-transparent p-3">
+          </select>
+
+        </div>
+
+        <hr class="my-7 border-slate-200 dark:border-slate-800">
+
+        <h2 class="text-xl font-bold mb-5">
+          App Icon
+        </h2>
+
+        <input
+          id="icon"
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          class="w-full border dark:border-slate-700 rounded-xl p-3">
+
+        <div
+          id="iconInfo"
+          class="text-sm text-slate-500 mt-2">
+          Opsional. PNG disarankan.
+        </div>
+
+        <hr class="my-7 border-slate-200 dark:border-slate-800">
+
+        <h2 class="text-xl font-bold mb-5">
+          Permissions
+        </h2>
+
+        <div class="grid sm:grid-cols-2 gap-3">
+
+          <label class="border dark:border-slate-700 rounded-xl p-4">
+            <input
+              type="checkbox"
+              checked
+              disabled>
+            Internet
+          </label>
+
+          <label class="border dark:border-slate-700 rounded-xl p-4">
+            <input
+              id="permissionCamera"
+              type="checkbox">
+            Camera
+          </label>
+
+          <label class="border dark:border-slate-700 rounded-xl p-4">
+            <input
+              id="permissionMicrophone"
+              type="checkbox">
+            Microphone
+          </label>
+
+          <label class="border dark:border-slate-700 rounded-xl p-4">
+            <input
+              id="permissionNotifications"
+              type="checkbox">
+            Notifications
+          </label>
+
+          <label class="border dark:border-slate-700 rounded-xl p-4">
+            <input
+              id="permissionLocation"
+              type="checkbox">
+            Location
+          </label>
+
+        </div>
+
+        <hr class="my-7 border-slate-200 dark:border-slate-800">
+
+        <h2 class="text-xl font-bold mb-5">
+          Advertising
+        </h2>
+
+        <label class="flex items-center gap-3">
+
+          <input
+            id="adsEnabled"
+            type="checkbox"
+            onchange="toggleAds()">
+
+          <span>
+            Aktifkan AdMob Banner
+          </span>
+
+        </label>
+
+        <div
+          id="adsForm"
+          class="hidden mt-4 space-y-4">
+
+          <div>
+            <label class="text-sm font-semibold">
+              AdMob App ID
+            </label>
+
+            <input
+              id="adsAppId"
+              placeholder="ca-app-pub-xxxxxxxx~xxxxxxxx"
+              class="mt-2 w-full rounded-xl border dark:border-slate-700 bg-transparent p-3">
+          </div>
+
+          <div>
+            <label class="text-sm font-semibold">
+              Banner Ad Unit ID
+            </label>
+
+            <input
+              id="adsAdUnitId"
+              placeholder="ca-app-pub-xxxxxxxx/xxxxxxxx"
+              class="mt-2 w-full rounded-xl border dark:border-slate-700 bg-transparent p-3">
+          </div>
+
+        </div>
+
+        <button
+          onclick="buildAPK()"
+          id="buildButton"
+          class="mt-8 w-full rounded-2xl bg-slate-950 dark:bg-white text-white dark:text-black py-4 font-black text-lg">
+          Build APK
+        </button>
+
+        <div id="result" class="mt-5"></div>
+
+      </div>
+
+    </section>
+
+    <!-- SIDE -->
+
+    <aside class="space-y-5">
+
+      <div class="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-3xl p-6">
+
+        <h2 class="font-bold text-lg">
+          Build Information
+        </h2>
+
+        <ul class="mt-4 text-sm text-slate-500 space-y-3">
+          <li>Package dibuat dari config.</li>
+          <li>Version Name masuk ke AndroidManifest/build config.</li>
+          <li>Version Code dibuat sebagai integer.</li>
+          <li>Permission dipilih sebelum build.</li>
+          <li>Icon dimasukkan ke resource APK.</li>
+          <li>APK debug otomatis ditandatangani Gradle.</li>
+        </ul>
+
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-3xl p-6">
+
+        <h2 class="font-bold text-lg">
+          Google Account
+        </h2>
+
+        <div id="googleUser"
+          class="mt-4 text-sm text-slate-500">
+          Belum login.
+        </div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+</main>
+
+<script>
+
+/* =========================================================
+   THEME
+========================================================= */
+
+function toggleTheme() {
+
+  document.documentElement.classList.toggle(
+    "dark"
+  );
+
+  localStorage.setItem(
+    "zlez-theme",
+    document.documentElement.classList.contains("dark")
+      ? "dark"
+      : "light"
+  );
+}
+
+if (
+  localStorage.getItem("zlez-theme") === "dark"
+) {
+  document.documentElement.classList.add("dark");
+}
+
+/* =========================================================
+   FILE INFO
+========================================================= */
+
+document
+  .getElementById("website")
+  .addEventListener("change", e => {
+
+    const file = e.target.files[0];
+
+    document.getElementById(
+      "websiteInfo"
+    ).textContent =
+      file
+        ? `${file.name} — ${formatBytes(file.size)}`
+        : "Belum ada ZIP.";
+
+  });
+
+document
+  .getElementById("icon")
+  .addEventListener("change", e => {
+
+    const file = e.target.files[0];
+
+    document.getElementById(
+      "iconInfo"
+    ).textContent =
+      file
+        ? `${file.name} — ${file.type}`
+        : "Opsional. PNG disarankan.";
+
+  });
+
+function formatBytes(bytes) {
+
+  if (!bytes) return "0 B";
+
+  const units = [
+    "B",
+    "KB",
+    "MB",
+    "GB"
+  ];
+
+  const i = Math.floor(
+    Math.log(bytes) /
+    Math.log(1024)
+  );
+
+  return (
+    (bytes / Math.pow(1024, i))
+      .toFixed(i ? 2 : 0)
+    + " "
+    + units[i]
+  );
+}
+
+/* =========================================================
+   ADS
+========================================================= */
+
+function toggleAds() {
+
+  document
+    .getElementById("adsForm")
+    .classList.toggle(
+      "hidden",
+      !document.getElementById("adsEnabled").checked
+    );
+
+}
+
+/* =========================================================
+   TEMPLATES
+========================================================= */
+
+async function loadTemplates() {
+
+  try {
+
+    const response =
+      await fetch("/api/templates");
+
+    const data =
+      await response.json();
+
+    const select =
+      document.getElementById("template");
+
+    select.innerHTML = "";
+
+    for (const template of data.templates) {
+
+      const option =
+        document.createElement("option");
+
+      option.value =
+        template.id;
+
+      option.textContent =
+        template.name;
+
+      select.appendChild(
+        option
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+}
+
+/* =========================================================
+   BUILD
+========================================================= */
+
+async function buildAPK() {
+
+  const website =
+    document.getElementById("website").files[0];
+
+  if (!website) {
+
+    showError(
+      "Upload website ZIP terlebih dahulu."
+    );
+
+    return;
+  }
+
+  const button =
+    document.getElementById("buildButton");
+
+  const result =
+    document.getElementById("result");
+
+  button.disabled = true;
+  button.textContent =
+    "Building APK...";
+
+  result.innerHTML = `
+    <div class="rounded-xl bg-blue-500/10
+      text-blue-500 p-4">
+      Backend sedang membuat Android project
+      dan menjalankan Gradle. Proses ini bisa
+      memerlukan beberapa menit.
+    </div>
+  `;
+
+  const form =
+    new FormData();
+
+  form.append(
+    "website",
+    website
+  );
+
+  const icon =
+    document.getElementById("icon").files[0];
+
+  if (icon) {
+    form.append(
+      "icon",
+      icon
+    );
+  }
+
+  form.append(
+    "appName",
+    document.getElementById("appName").value
+  );
+
+  form.append(
+    "packageName",
+    document.getElementById("packageName").value
+  );
+
+  form.append(
+    "versionName",
+    document.getElementById("versionName").value
+  );
+
+  form.append(
+    "versionCode",
+    document.getElementById("versionCode").value
+  );
+
+  form.append(
+    "template",
+    document.getElementById("template").value
+  );
+
+  form.append(
+    "permissionCamera",
+    document.getElementById("permissionCamera").checked
+  );
+
+  form.append(
+    "permissionMicrophone",
+    document.getElementById("permissionMicrophone").checked
+  );
+
+  form.append(
+    "permissionNotifications",
+    document.getElementById("permissionNotifications").checked
+  );
+
+  form.append(
+    "permissionLocation",
+    document.getElementById("permissionLocation").checked
+  );
+
+  form.append(
+    "adsEnabled",
+    document.getElementById("adsEnabled").checked
+  );
+
+  form.append(
+    "adsAppId",
+    document.getElementById("adsAppId").value
+  );
+
+  form.append(
+    "adsAdUnitId",
+    document.getElementById("adsAdUnitId").value
+  );
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/build",
+        {
+          method: "POST",
+          body: form
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (!data.ok) {
+
+      throw new Error(
+        data.error ||
+        "Build gagal."
+      );
+
+    }
+
+    result.innerHTML = `
+      <div class="rounded-2xl
+        bg-emerald-500/10
+        border border-emerald-500/30
+        p-5">
+
+        <div class="font-black
+          text-emerald-500">
+          APK berhasil dibuat
+        </div>
+
+        <div class="text-sm mt-3 space-y-1">
+
+          <div>
+            App:
+            <b>${escapeHTML(data.appName)}</b>
+          </div>
+
+          <div>
+            Package:
+            <b>${escapeHTML(data.packageName)}</b>
+          </div>
+
+          <div>
+            Version:
+            <b>${escapeHTML(data.versionName)}</b>
+          </div>
+
+          <div>
+            Version Code:
+            <b>${data.versionCode}</b>
+          </div>
+
+        </div>
+
+        <a
+          href="${data.download}"
+          class="block text-center mt-5
+          rounded-xl bg-slate-950
+          dark:bg-white
+          text-white dark:text-black
+          py-3 font-bold">
+
+          Download APK
+
+        </a>
+
+      </div>
+    `;
+
+  } catch (error) {
+
+    showError(
+      error.message
+    );
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      "Build APK";
+
+  }
+
+}
+
+function showError(message) {
+
+  document.getElementById(
+    "result"
+  ).innerHTML = `
+    <div class="rounded-xl
+      bg-red-500/10
+      border border-red-500/30
+      text-red-500 p-4">
+
+      ${escapeHTML(message)}
+
+    </div>
+  `;
+
+}
+
+/* =========================================================
+   GOOGLE GIS
+========================================================= */
+
+function loginGoogle() {
+
+  const clientId =
+    localStorage.getItem(
+      "zlez-google-client-id"
+    );
+
+  if (!clientId) {
+
+    const id =
+      prompt(
+        "Masukkan Google OAuth Client ID:"
+      );
+
+    if (!id) return;
+
+    localStorage.setItem(
+      "zlez-google-client-id",
+      id
+    );
+
+    startGoogle(id);
+
+    return;
+  }
+
+  startGoogle(clientId);
+}
+
+function startGoogle(clientId) {
+
+  if (
+    !window.google ||
+    !google.accounts
+  ) {
+
+    alert(
+      "Google Identity Services belum siap."
+    );
+
+    return;
+  }
+
+  google.accounts.id.initialize({
+    client_id: clientId,
+    callback: handleGoogle
+  });
+
+  google.accounts.id.prompt();
+}
+
+function handleGoogle(response) {
+
+  try {
+
+    const payload =
+      response.credential
+        .split(".")[1]
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+
+    const decoded =
+      JSON.parse(
+        decodeURIComponent(
+          atob(payload)
+            .split("")
+            .map(c =>
+              "%" +
+              ("00" +
+              c.charCodeAt(0)
+              .toString(16))
+              .slice(-2)
+            )
+            .join("")
+        )
+      );
+
+    localStorage.setItem(
+      "zlez-user",
+      JSON.stringify(decoded)
+    );
+
+    document.getElementById(
+      "googleUser"
+    ).innerHTML = `
+      <div class="flex items-center gap-3">
+
+        ${
+          decoded.picture
+            ? `<img src="${decoded.picture}"
+                class="w-10 h-10 rounded-full">`
+            : ""
+        }
+
+        <div>
+          <div class="font-bold">
+            ${escapeHTML(decoded.name || "")}
+          </div>
+
+          <div>
+            ${escapeHTML(decoded.email || "")}
+          </div>
+        </div>
+
+      </div>
+    `;
+
+  } catch (error) {
+
+    alert(
+      "Token Google tidak dapat dibaca."
+    );
+
+  }
+
+}
+
+/* =========================================================
+   SECURITY HELPER
+========================================================= */
+
+function escapeHTML(value) {
+
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+
+loadTemplates();
+
+</script>
+
+</body>
+</html>
